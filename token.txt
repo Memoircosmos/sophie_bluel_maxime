@@ -1,0 +1,4 @@
+{
+  "userId": 1,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcyMzQ2NDg5MiwiZXhwIjoxNzIzNTUxMjkyfQ.w5s0UBn31AQca9pzQ6jyoVBG9q2Oe9_8ozvISuJut6s"
+}

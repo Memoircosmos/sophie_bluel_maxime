@@ -9,7 +9,8 @@ const openSecondModal = document.querySelector(".button_add")
 const closeModal = document.querySelectorAll(".gallery_close")
 const returnIcon = document.querySelector("#arrow-return")
 const buttonModifier = document.querySelector("#openModal")
-const modal =document.querySelector(".modal")
+const modal = document.querySelector(".modal")
+const modalWorkContainer = document.querySelector(".list_works")
 /*création fonction pour appeler api pour retourner works*/
 
 let allWorks = []; /*création initialisation tableau*/
@@ -154,7 +155,44 @@ returnIcon.addEventListener("click",(event) => {
     showFirstModal()
 })
 
+let snaps = []
+let trash = []
+
+/*méthode qui récupère les works pour la mettre dans la premère modal et qui fait en sorte qu'on puisse les suppr avec l'icone poubelle*/
+
+const getWorksModal = async() => {
+try {
+    const works = await fetch(`${api}`)
+    let worksData = await works.json()
+    modalWorkContainer.innerHTML = "" /*on vérifie que la galery est vide et on récup la réponse de l'api*/
+    worksData.forEach((dataGroup)=>{
+        let img = document.createElement("img")
+        img.src = dataGroup.imageUrl
+        snaps[dataGroup.id] = document.createElement("figure")
+        snaps[dataGroup.id].appendChild(img)
+
+        trash[dataGroup.id] = document.createElement("i")
+        trash[dataGroup.id].classList.add("fa-solid","fa-trash-can","trash")
+        snaps[dataGroup.id].appendChild(trash[dataGroup.id])
+        modalWorkContainer.appendChild(snaps[dataGroup.id])
+        const urlDelete = `http://localhost:5678/api/works/${dataGroup.id}}`;
+
+        trash[dataGroup.id].addEventListener("click", ()=> {
+            deleteData (urlDelete)
+            modal.style.display = "none"
+        })
+    })
+} catch (error) {
+    console.error("error fetching works", error)
+}
+}
+
 buttonModifier.addEventListener("click",()=>{
     modal.style.display = "flex"
     content_gallery_interface.style.display = "flex"
+    getWorksModal()
 } )
+
+const deleteData = (url) =>{
+    
+}

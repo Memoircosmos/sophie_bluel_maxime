@@ -140,6 +140,7 @@ body {
 	margin: auto;
 	font-family: 'Work Sans';
 	font-size: 14px;
+	background-color: #FFFEF8;;
 }
 
 header {
@@ -179,7 +180,7 @@ h2 {
 .openModal {
 	display: flex;
 	gap: 10px;
-
+	cursor: pointer;
 }
 
 .putRight {
@@ -192,6 +193,12 @@ h2 {
 
 .gallery_interface {
 	z-index: 10;
+	width: 87%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 }
 
 
@@ -311,7 +318,6 @@ li:hover {
 	background-color: black;
 	width: 23%;
 	aspect-ratio: 1/1;
-	font-size: 0.8vw;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -372,6 +378,11 @@ li:hover {
 	font-family: "Work Sans";
 	font-size: 26px;
 	font-weight: 400;
+}
+
+hr{
+	background-color: #B3B3B3;
+	width: 68%;
 }
 
 #myModal {
@@ -572,4 +583,55 @@ footer nav ul {
 	display: flex;
 	justify-content: flex-end;
 	margin: 2em
+}
+
+/*Style Login*/
+
+#connect {
+	width: 50%;
+  	margin: auto;
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center;
+	  justify-content: center;
+	  text-align: center; /* Pour centrer le texte des éléments */
+}
+
+
+#connect h2 {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 60px;
+}
+
+#email {
+	height: 51px;
+	width: 379px;
+	margin-bottom: 20px;
+}
+
+#password {
+	height: 51px;
+	width: 379px;
+	margin-bottom: 20px;
+}
+
+#login-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center; /* Pour centrer les champs du formulaire */
+    width: 100%; /* Pour s'assurer que les champs s'alignent correctement au centre */
+}
+
+#login-form label {
+    align-self: flex-start; /* Aligne les labels à gauche */
+    margin-bottom: 10px; /* Ajout d'un petit espace sous les labels */
+    margin-left: calc(50% - 189.5px); /* Pour aligner le label au-dessus du champ */
+    text-align: left;
+}
+
+#submit {
+	width: 179px;
+	height: 36px;
+	margin-top: 20px; /* Espacement au-dessus du bouton */
 }
