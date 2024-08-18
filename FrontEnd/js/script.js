@@ -160,11 +160,81 @@ let trash = []
 
 /*méthode qui récupère les works pour la mettre dans la premère modal et qui fait en sorte qu'on puisse les suppr avec l'icone poubelle*/
 
+// Fonction pour récupérer les works et les afficher dans la modale avec l'icône trash
 const getWorksModal = async() => {
+    try {
+        const response = await fetch(api);
+        const worksData = await response.json();
+        modalWorkContainer.innerHTML = ""; // On s'assure que le conteneur est vide
+
+        worksData.forEach((work) => {
+            // Création de l'élément figure pour chaque work
+            const figure = document.createElement("figure");
+            
+            // Création de l'image
+            const img = document.createElement("img");
+            img.src = work.imageUrl;
+            img.alt = work.title;
+
+            // Ajout de l'image dans la figure
+            figure.appendChild(img);
+
+            // Création de l'icône poubelle
+            const trashIcon = document.createElement("i");
+            trashIcon.classList.add("fa-solid", "fa-trash-can", "trash");
+
+            // Ajout de l'icône poubelle dans la figure
+            figure.appendChild(trashIcon);
+
+            // Ajout de la figure dans le conteneur de la modale
+            modalWorkContainer.appendChild(figure);
+
+            // Ajout de l'événement de suppression à l'icône poubelle
+            trashIcon.addEventListener("click", () => {
+                deleteData(work.id, figure);
+            });
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des works", error);
+    }
+};
+
+// Fonction pour supprimer un work
+const deleteData = async (workId, figureElement) => {
+    const deleteUrl = `http://localhost:5678/api/works/${workId}`;
+    
+    try {
+        const response = await fetch(deleteUrl, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Si authentification requise
+            },
+        });
+
+        if (response.ok) {
+            // Suppression de l'élément figure de l'interface
+            figureElement.remove();
+        } else {
+            console.error("Erreur lors de la suppression du work");
+        }
+    } catch (error) {
+        console.error("Erreur lors de la requête de suppression", error);
+    }
+};
+
+// Ouverture de la modale lors du clic sur le bouton modifier
+buttonModifier.addEventListener("click", () => {
+    modal.style.display = "flex";
+    content_gallery_interface.style.display = "flex";
+    getWorksModal(); // Afficher les works dans la modale
+});
+
+
+/*const getWorksModal = async() => {
 try {
     const works = await fetch(`${api}`)
     let worksData = await works.json()
-    modalWorkContainer.innerHTML = "" /*on vérifie que la galery est vide et on récup la réponse de l'api*/
+    modalWorkContainer.innerHTML = "" /*on vérifie que la galery est vide et on récup la réponse de l'api
     worksData.forEach((dataGroup)=>{
         let img = document.createElement("img")
         img.src = dataGroup.imageUrl
@@ -195,4 +265,149 @@ buttonModifier.addEventListener("click",()=>{
 
 const deleteData = (url) =>{
     
-}
+}*/
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loginLink = document.querySelector('nav ul li:nth-child(3) a'); // Sélectionner le lien "login"
+
+    // Vérifie si l'utilisateur est connecté en vérifiant la présence du token
+    const token = localStorage.getItem('token');
+
+    if (token) {
+        // Si le token est présent, l'utilisateur est connecté
+        loginLink.textContent = 'Logout';  // Change le texte en "Logout"
+        loginLink.href = '#';  // Désactive le lien "login"
+
+        // Ajouter un écouteur pour gérer la déconnexion
+        loginLink.addEventListener('click', (event) => {
+            event.preventDefault();  // Empêche le lien par défaut
+            localStorage.removeItem('token');  // Supprime le token
+            window.location.reload();  // Recharge la page pour refléter le changement
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+
+    // Sélectionner le bouton "Modifier" et son symbole associé
+    const modifyButton = document.querySelector('#openModal');  // Le bouton "Modifier"
+    const modifyIcon = document.querySelector('.fa-pen-to-square');  // Le symbole associé
+
+    // Vérifier si l'utilisateur est connecté
+    if (token) {
+        // Si connecté, afficher le bouton "Modifier" et le symbole
+        modifyButton.style.display = 'flex'; 
+        modifyIcon.style.display = 'inline-block';
+    } else {
+        // Si non connecté, masquer le bouton "Modifier" et le symbole
+        modifyButton.style.display = 'none';
+        modifyIcon.style.display = 'none';
+    }
+});
+
+
+
+/*document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+
+    const loginLink = document.querySelector('nav ul li:nth-child(3) a');
+    const modifyButton = document.querySelector('#openModal');
+    const modifyIcon = document.querySelector('.fa-pen-to-square');
+
+    if (token) {
+        loginLink.textContent = 'Logout';
+        loginLink.href = '#';
+        loginLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            localStorage.removeItem('token');
+            window.location.reload();
+        });
+
+        modifyButton.style.display = 'flex';
+        modifyIcon.style.display = 'inline-block';
+    } else {
+        modifyButton.style.display = 'none';
+        modifyIcon.style.display = 'none';
+    }
+});*/
+
+
+//update 18.08
+const populateCategoryDropdown = async () => {
+    try {
+        const result = await fetch(apiCategory);
+        const categories = await result.json();
+        const categorySelect = document.querySelector('#category');
+
+        categorySelect.innerHTML = ''; // On vide le select avant de le remplir
+
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des catégories", error);
+    }
+};
+
+// Fonction pour gérer l'ajout d'images à la galerie
+const handleImageUpload = async (event) => {
+    event.preventDefault();
+
+    const fileInput = document.querySelector('#file-upload');
+    const titleInput = document.querySelector('#title');
+    const categorySelect = document.querySelector('#category');
+
+    const file = fileInput.files[0];
+    const title = titleInput.value;
+    const categoryId = categorySelect.value;
+
+    if (!file || !title || !categoryId) {
+        alert('Veuillez remplir tous les champs.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('title', title);
+    formData.append('category', categoryId);
+
+    try {
+        const response = await fetch(api, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: formData
+        });
+
+        if (response.ok) {
+            const newWork = await response.json();
+            allWorks.push(newWork); // Ajoute la nouvelle image à la liste des travaux
+            const figure = creatWorkfigure(newWork);
+            gallery.appendChild(figure); // Ajoute la nouvelle image à la galerie
+            resetFileInput(); // Réinitialiser le formulaire
+            secondModal.style.display = "none"; // Fermer la modale
+        } else {
+            alert('Erreur lors de l\'ajout de l\'image.');
+        }
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi de l\'image', error);
+    }
+};
+
+// Fonction pour réinitialiser le formulaire
+const resetFileInput = () => {
+    document.querySelector('#file-upload').value = '';
+    document.querySelector('#title').value = '';
+    document.querySelector('#category').value = '';
+};
+
+// Appeler la fonction pour afficher les catégories dans le menu déroulant
+populateCategoryDropdown();
+
+// Ajouter un événement sur le formulaire pour gérer l'ajout d'images
+document.querySelector('form').addEventListener('submit', handleImageUpload);

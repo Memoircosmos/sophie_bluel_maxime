@@ -397,6 +397,7 @@ hr{
 	flex-direction: column;
 	border-radius: 10px;
 	height: 65%;
+	padding: 36px 40px;
 }
 
 .upload-section {
@@ -407,6 +408,7 @@ hr{
 	border-radius: 3px;
 	background: #E8F1F6;
 	margin: 0 auto 20px;
+	
 }
 
 .valider {
