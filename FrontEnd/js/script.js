@@ -11,6 +11,10 @@ const returnIcon = document.querySelector("#arrow-return")
 const buttonModifier = document.querySelector("#openModal")
 const modal = document.querySelector(".modal")
 const modalWorkContainer = document.querySelector(".list_works")
+const imagePreview = document.querySelector("#imagePreview")
+const fileInput = document.querySelector('#file-upload');
+const titleInput = document.querySelector('#title');
+const categorySelect = document.querySelector('#category');
 /*création fonction pour appeler api pour retourner works*/
 
 let allWorks = []; /*création initialisation tableau*/
@@ -122,7 +126,6 @@ openSecondModal.onclick = () => {
     firstModal.style.display = "none"
     secondModal.style.display = "block"
     resetFileInput() /*réinitialiser le champ input file*/ 
-    selectCategory()
     updateSubmitButtonState()
     
 }
@@ -153,6 +156,7 @@ const showFirstModal = () => {
 returnIcon.addEventListener("click",(event) => {
     event.preventDefault()
     showFirstModal()
+    resetFileInput()
 })
 
 let snaps = []
@@ -230,85 +234,8 @@ buttonModifier.addEventListener("click", () => {
 });
 
 
-/*const getWorksModal = async() => {
-try {
-    const works = await fetch(`${api}`)
-    let worksData = await works.json()
-    modalWorkContainer.innerHTML = "" /*on vérifie que la galery est vide et on récup la réponse de l'api
-    worksData.forEach((dataGroup)=>{
-        let img = document.createElement("img")
-        img.src = dataGroup.imageUrl
-        snaps[dataGroup.id] = document.createElement("figure")
-        snaps[dataGroup.id].appendChild(img)
-
-        trash[dataGroup.id] = document.createElement("i")
-        trash[dataGroup.id].classList.add("fa-solid","fa-trash-can","trash")
-        snaps[dataGroup.id].appendChild(trash[dataGroup.id])
-        modalWorkContainer.appendChild(snaps[dataGroup.id])
-        const urlDelete = `http://localhost:5678/api/works/${dataGroup.id}}`;
-
-        trash[dataGroup.id].addEventListener("click", ()=> {
-            deleteData (urlDelete)
-            modal.style.display = "none"
-        })
-    })
-} catch (error) {
-    console.error("error fetching works", error)
-}
-}
-
-buttonModifier.addEventListener("click",()=>{
-    modal.style.display = "flex"
-    content_gallery_interface.style.display = "flex"
-    getWorksModal()
-} )
-
-const deleteData = (url) =>{
-    
-}*/
 
 document.addEventListener('DOMContentLoaded', () => {
-    const loginLink = document.querySelector('nav ul li:nth-child(3) a'); // Sélectionner le lien "login"
-
-    // Vérifie si l'utilisateur est connecté en vérifiant la présence du token
-    const token = localStorage.getItem('token');
-
-    if (token) {
-        // Si le token est présent, l'utilisateur est connecté
-        loginLink.textContent = 'Logout';  // Change le texte en "Logout"
-        loginLink.href = '#';  // Désactive le lien "login"
-
-        // Ajouter un écouteur pour gérer la déconnexion
-        loginLink.addEventListener('click', (event) => {
-            event.preventDefault();  // Empêche le lien par défaut
-            localStorage.removeItem('token');  // Supprime le token
-            window.location.reload();  // Recharge la page pour refléter le changement
-        });
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
-
-    // Sélectionner le bouton "Modifier" et son symbole associé
-    const modifyButton = document.querySelector('#openModal');  // Le bouton "Modifier"
-    const modifyIcon = document.querySelector('.fa-pen-to-square');  // Le symbole associé
-
-    // Vérifier si l'utilisateur est connecté
-    if (token) {
-        // Si connecté, afficher le bouton "Modifier" et le symbole
-        modifyButton.style.display = 'flex'; 
-        modifyIcon.style.display = 'inline-block';
-    } else {
-        // Si non connecté, masquer le bouton "Modifier" et le symbole
-        modifyButton.style.display = 'none';
-        modifyIcon.style.display = 'none';
-    }
-});
-
-
-
-/*document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
 
     const loginLink = document.querySelector('nav ul li:nth-child(3) a');
@@ -318,6 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (token) {
         loginLink.textContent = 'Logout';
         loginLink.href = '#';
+        categoryContainer.style.visibility = "hidden"
         loginLink.addEventListener('click', (event) => {
             event.preventDefault();
             localStorage.removeItem('token');
@@ -329,8 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         modifyButton.style.display = 'none';
         modifyIcon.style.display = 'none';
+        categoryContainer.style.visibility = "visible"
     }
-});*/
+});
 
 
 //update 18.08
@@ -353,14 +282,26 @@ const populateCategoryDropdown = async () => {
     }
 };
 
+fileInput.addEventListener("change",(event)=>{
+    const file = event.target.files[0];
+    const ACCEPTEXTENSION = ["png","jpg"]
+    const fileName = file.name
+    const extension = fileName.split(".").pop().toLowerCase()
+    if (file && file.size < 4 * 1024 * 1024 && ACCEPTEXTENSION.includes(extension)){
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            imagePreview.src = e.target.result
+            imagePreview.style.display="block"
+        }
+        reader.readAsDataURL(file)
+    }else{
+        alert("Erreur lors du chargement de l'image")
+    }
+})
+
 // Fonction pour gérer l'ajout d'images à la galerie
 const handleImageUpload = async (event) => {
     event.preventDefault();
-
-    const fileInput = document.querySelector('#file-upload');
-    const titleInput = document.querySelector('#title');
-    const categorySelect = document.querySelector('#category');
-
     const file = fileInput.files[0];
     const title = titleInput.value;
     const categoryId = categorySelect.value;
@@ -369,7 +310,7 @@ const handleImageUpload = async (event) => {
         alert('Veuillez remplir tous les champs.');
         return;
     }
-
+console.log("categoryId",categoryId)
     const formData = new FormData();
     formData.append('image', file);
     formData.append('title', title);
