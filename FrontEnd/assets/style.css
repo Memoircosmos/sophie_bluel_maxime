@@ -262,6 +262,31 @@ li:hover {
 	width: 100%;
 
 }
+/*bande noire édition*/
+
+.edit-mode-banner {
+    display: none; /* La bande est cachée par défaut */
+    position: fixed;
+    top: 0;
+	left: 0;
+    width: 100vw;
+    height: 60px;
+    background-color: black;
+    color: white;
+    text-align: center;
+    line-height: 60px; /* Centre verticalement le texte */
+    font-size: 18px;
+    z-index: 9999; /* Assure que la bande est au-dessus de tout */
+    font-family: 'Work Sans', sans-serif;
+}
+
+.edit-mode-banner i {
+    margin-right: 10px; /* Ajoute un espacement entre l'icône et le texte */
+    font-size: 22px; /* Ajuste la taille de l'icône */
+    vertical-align: middle; /* Aligne l'icône verticalement avec le texte */
+	
+}
+
 
 /*Modales*/
 
@@ -290,7 +315,10 @@ li:hover {
 	align-items: center;
 	flex-direction: column;
 	border-radius: 10px;
-	height: 68%;
+	position: fixed; /* Fixe la modale par rapport à la fenêtre */
+    top: 50%; /* Place le centre de la modale à 50% de la hauteur de l'écran */
+    left: 50%; /* Place le centre de la modale à 50% de la largeur de l'écran */
+    transform: translate(-50%, -50%); /* Centre la modale en ajustant le point d'ancrage */
 }
 
 .modal .gallery_interface .list_works {
@@ -399,6 +427,29 @@ hr{
 	height: 65%;
 	padding: 36px 40px;
 }
+
+/* Styles pour la modale principale */
+#modal .content {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Styles pour la seconde modale (Ajout photo) */
+#myModal .modal-content {
+   /* width: 45%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 36px 40px;*/
+    position: fixed; /* Fixe la modale par rapport à la fenêtre */
+    top: 50%; /* Place le centre de la modale à 50% de la hauteur de l'écran */
+    left: 50%; /* Place le centre de la modale à 50% de la largeur de l'écran */
+    transform: translate(-50%, -50%); /* Centre la modale en ajustant le point d'ancrage */
+}
+
 
 .upload-section {
 	text-align: center;

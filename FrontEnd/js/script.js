@@ -233,7 +233,22 @@ buttonModifier.addEventListener("click", () => {
     getWorksModal(); // Afficher les works dans la modale
 });
 
+//fonction pour afficher la barre noire
 
+const showEditModeBanner = () => {
+    const banner = document.querySelector('#edit-mode-banner');
+    const token = localStorage.getItem('token');
+
+    if (token) {
+        banner.style.display = 'block'; // Affiche la bande si l'utilisateur est connecté
+        document.body.style.paddingTop = '60px'; // Évite de masquer le contenu sous la bande
+    }
+};
+
+
+
+
+//login, verification token + masquer modifier et menu
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
@@ -254,6 +269,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modifyButton.style.display = 'flex';
         modifyIcon.style.display = 'inline-block';
+        // Appelez la fonction pour afficher la bande si l'utilisateur est connecté
+        showEditModeBanner();
     } else {
         modifyButton.style.display = 'none';
         modifyIcon.style.display = 'none';
@@ -340,12 +357,48 @@ console.log("categoryId",categoryId)
     }
 };
 
-// Fonction pour réinitialiser le formulaire
-const resetFileInput = () => {
-    document.querySelector('#file-upload').value = '';
-    document.querySelector('#title').value = '';
-    document.querySelector('#category').value = '';
+
+
+// Fonction pour réinitialiser les champs de la seconde modale
+const resetSecondModalFields = () => {
+    // Réinitialiser le champ de fichier, le titre et la catégorie
+    fileInput.value = '';
+    titleInput.value = '';
+    categorySelect.value = '';
+
+    // Réinitialiser l'aperçu de l'image
+    imagePreview.src = '';
+    imagePreview.style.display = 'none';
+
+    // Réinitialiser d'autres éléments si nécessaire
+    // ...
 };
+
+// Appel de la fonction de réinitialisation lorsque la modale est fermée
+closeModal.forEach((btn) => {
+    btn.onclick = () => {
+        firstModal.style.display = "none";
+        secondModal.style.display = "none";
+        resetSecondModalFields(); // Réinitialise les champs ici
+    }
+});
+
+window.onclick = (event) => {
+    if (event.target == firstModal) {
+        firstModal.style.display = "none";
+    } else if (event.target == secondModal) {
+        secondModal.style.display = "none";
+        resetSecondModalFields(); // Réinitialise les champs ici
+    }
+};
+
+// Réinitialisation des champs lors du retour à la première modale
+returnIcon.addEventListener("click", (event) => {
+    event.preventDefault();
+    showFirstModal();
+    resetSecondModalFields(); // Réinitialise les champs ici
+});
+
 
 // Appeler la fonction pour afficher les catégories dans le menu déroulant
 populateCategoryDropdown();
