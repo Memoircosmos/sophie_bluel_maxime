@@ -111,11 +111,11 @@ const filteredWorks = allWorks.filter((work)=>work.categoryId === categoryId) /*
 
 }
 
-categoryContainer.addEventListener("click",(event) => {                              /*quand je click sur le bouton, appel la méthode categoryContainer pour trier*/
-const buttons = document.querySelectorAll(".categories button")     /*on va chercher les button contenus dans la div de classe categories*/
+categoryContainer.addEventListener("click",(event) => {             //utilise category container onclick                 
+const buttons = document.querySelectorAll(".categories button")     //on va chercher les button contenus dans la div de classe categories
 if (event.target.getAttribute("data-filter")){
     buttons.forEach((button) => button.classList.remove("filter-active"))   /*si y'a un bouton qui est sélectionné, on le dé-sélectionne en lui enlevant la classe filter-active*/
-    const categoryId = parseInt(event.target.getAttribute("data-filter")) /*fait en sorte que data-filter qui est en string apparaisse en nombre ou en chiffre*/
+    const categoryId = parseInt(event.target.getAttribute("data-filter")) //transforme data filter de string en chiffre
     event.target.classList.add("filter-active")
     filterWorkByCategory(categoryId)
 }
@@ -138,7 +138,7 @@ closeModal.forEach((btn) =>{
 } ) 
 
 
-window.onclick = (event) => {/*on ferme les 2 modales quand on click à l'extérieure*/
+window.onclick = (event) => {//fermer modal si click externe
 if(event.target == firstModal){
     firstModal.style.display = "none"
 }else if(event.target == secondModal) {
@@ -169,7 +169,7 @@ const getWorksModal = async() => {
     try {
         const response = await fetch(api);
         const worksData = await response.json();
-        modalWorkContainer.innerHTML = ""; // On s'assure que le conteneur est vide
+        modalWorkContainer.innerHTML = ""; //conteneur vide
 
         worksData.forEach((work) => {
             // Création de l'élément figure pour chaque work
@@ -251,7 +251,7 @@ const showEditModeBanner = () => {
 
     if (token) {
         banner.style.display = 'block'; // Affiche la bande si l'utilisateur est connecté
-        document.body.style.paddingTop = '60px'; // Évite de masquer le contenu sous la bande
+        document.body.style.paddingTop = '60px'; 
     }
 };
 
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded',() =>{
 // gérer l'état du bouton de soumission "valider"
 const updateSubmitButton = () => {
     const title = titleInput.value.trim();
-    const categorySelected = categorySelect.selectedIndex > 0; //passe en >= pour inclure objet
+    const categorySelected = categorySelect.selectedIndex > 0; 
     const imageLoaded = fileInput.files.length > 0;
 
     if (title && categorySelected && imageLoaded){
