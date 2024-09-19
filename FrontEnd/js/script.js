@@ -2,7 +2,6 @@ const gallery = document.querySelector(".gallery");
 const categoryContainer = document.querySelector(".categories")
 const content_gallery_interface = document.querySelector(".gallery_interface")
 const openModal = document.querySelector(".openModal")
-const addWorksSecondModal = document.querySelector(".button_add")
 const firstModal = document.querySelector("#modal")
 const secondModal = document.querySelector("#myModal")
 const openSecondModal = document.querySelector(".button_add")
@@ -15,6 +14,7 @@ const imagePreview = document.querySelector("#imagePreview")
 const fileInput = document.querySelector('#file-upload');
 const titleInput = document.querySelector('#title');
 const categorySelect = document.querySelector('#category');
+const buttonValidate = document.querySelector("#myModal form button[type='submit']")
 /*création fonction pour appeler api pour retourner works*/
 
 let allWorks = []; /*création initialisation tableau*/
@@ -125,8 +125,8 @@ if (event.target.getAttribute("data-filter")){
 openSecondModal.onclick = () => {
     firstModal.style.display = "none"
     secondModal.style.display = "block"
-    resetFileInput() /*réinitialiser le champ input file*/ 
-    updateSubmitButtonState()
+    resetSecondModalFields()
+    updateSubmitButton()
     
 }
 
@@ -205,13 +205,23 @@ const getWorksModal = async() => {
 
 // Fonction pour supprimer un work
 const deleteData = async (workId, figureElement) => {
+    const token = localStorage.getItem('token')
+    if (!token){
+        alert("Vous n'êtes pas connecté")
+        return
+    }
+
+    const confirmation = confirm("Êtes vous sur de vouloir supprimer cette image ?")
+    if (!confirmation){
+        return
+    }
     const deleteUrl = `http://localhost:5678/api/works/${workId}`;
     
     try {
         const response = await fetch(deleteUrl, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Si authentification requise
+                'Authorization': `Bearer ${token}`, // Si authentification requise
             },
         });
 
@@ -279,17 +289,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-//update 18.08
+//méthode pour insérer catégory dans menu déroulant
 const populateCategoryDropdown = async () => {
     try {
         const result = await fetch(apiCategory);
         const categories = await result.json();
         const categorySelect = document.querySelector('#category');
-
         categorySelect.innerHTML = ''; // On vide le select avant de le remplir
-
+        let option = document.createElement('option');  // Créer une première option vide qui apparait par défaut
+        categorySelect.appendChild(option);  // Ajouter la première option au select
         categories.forEach(category => {
-            const option = document.createElement('option');
+            let option = document.createElement('option');
             option.value = category.id;
             option.textContent = category.name;
             categorySelect.appendChild(option);
@@ -314,6 +324,7 @@ fileInput.addEventListener("change",(event)=>{
     }else{
         alert("Erreur lors du chargement de l'image")
     }
+    updateSubmitButton();
 })
 
 // Fonction pour gérer l'ajout d'images à la galerie
@@ -332,7 +343,7 @@ console.log("categoryId",categoryId)
     formData.append('image', file);
     formData.append('title', title);
     formData.append('category', categoryId);
-
+    const confirmation = confirm(`Êtes-vous sur de vouloir ajouter ${title}`)
     try {
         const response = await fetch(api, {
             method: 'POST',
@@ -370,8 +381,7 @@ const resetSecondModalFields = () => {
     imagePreview.src = '';
     imagePreview.style.display = 'none';
 
-    // Réinitialiser d'autres éléments si nécessaire
-    // ...
+  
 };
 
 // Appel de la fonction de réinitialisation lorsque la modale est fermée
@@ -399,6 +409,31 @@ returnIcon.addEventListener("click", (event) => {
     resetSecondModalFields(); // Réinitialise les champs ici
 });
 
+//état du bouton par défaut lorsque la page est chargée
+document.addEventListener('DOMContentLoaded',() =>{
+    updateSubmitButton()
+})
+// gérer l'état du bouton de soumission "valider"
+const updateSubmitButton = () => {
+    const title = titleInput.value.trim();
+    const categorySelected = categorySelect.selectedIndex > 0; //passe en >= pour inclure objet
+    const imageLoaded = fileInput.files.length > 0;
+
+    if (title && categorySelected && imageLoaded){
+        buttonValidate.classList.remove("disableButton");
+        buttonValidate.classList.add("enableButton");
+        buttonValidate.disabled = false;
+
+    }else {
+        buttonValidate.classList.remove("enableButton")
+        buttonValidate.classList.add("disableButton")
+        buttonValidate.disabled = true;
+    }
+}
+
+document.querySelector('#title').addEventListener('input',updateSubmitButton)
+categorySelect.addEventListener('change',updateSubmitButton)
+fileInput.addEventListener('change',updateSubmitButton)
 
 // Appeler la fonction pour afficher les catégories dans le menu déroulant
 populateCategoryDropdown();

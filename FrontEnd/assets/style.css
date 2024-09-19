@@ -437,13 +437,6 @@ hr{
 
 /* Styles pour la seconde modale (Ajout photo) */
 #myModal .modal-content {
-   /* width: 45%;
-    background-color: white;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    border-radius: 10px;
-    padding: 36px 40px;*/
     position: fixed; /* Fixe la modale par rapport à la fenêtre */
     top: 50%; /* Place le centre de la modale à 50% de la hauteur de l'écran */
     left: 50%; /* Place le centre de la modale à 50% de la largeur de l'écran */
@@ -462,7 +455,7 @@ hr{
 	
 }
 
-.valider {
+.enableButton {
 	border-radius: 60px;
 	background-color: #1D6154;
 	color: white;
@@ -473,9 +466,16 @@ hr{
 	height: 36px;
 }
 
-.validerDisabled {
+.disableButton {
+	border-radius: 60px;
 	background-color: #A7A7A7;
 	cursor: not-allowed;
+	color: white;
+	font-size: 14px;
+	margin-top: 30px;
+	margin-left: 220px;
+	width: 237px;
+	height: 36px;
 }
 
 .ligne {
