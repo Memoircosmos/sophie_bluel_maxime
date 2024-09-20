@@ -266,11 +266,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginLink = document.querySelector('nav ul li:nth-child(3) a');
     const modifyButton = document.querySelector('#openModal');
     const modifyIcon = document.querySelector('.fa-pen-to-square');
+    
 
     if (token) {
-        loginLink.textContent = 'Logout';
+        loginLink.textContent = 'logout';
         loginLink.href = '#';
-        categoryContainer.style.visibility = "hidden"
+        categoryContainer.style.display = "none";
         loginLink.addEventListener('click', (event) => {
             event.preventDefault();
             localStorage.removeItem('token');
@@ -284,7 +285,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         modifyButton.style.display = 'none';
         modifyIcon.style.display = 'none';
-        categoryContainer.style.visibility = "visible"
+        categoryContainer.style.display = "block";
+        categoryContainer.style.display = 'flex';
+        categoryContainer.style.justifyContent = 'center';  // Centrage horizontal
+        categoryContainer.style.marginTop = '20px';
     }
 });
 
